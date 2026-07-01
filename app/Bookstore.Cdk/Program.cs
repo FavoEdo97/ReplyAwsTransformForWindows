@@ -1,5 +1,4 @@
-﻿using Amazon.CDK;
-using Bookstore.Common;
+using Amazon.CDK;
 
 namespace Bookstore.Cdk;
 

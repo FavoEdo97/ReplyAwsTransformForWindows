@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Amazon.CDK;
 using Amazon.CDK.AWS.EC2;
 using Amazon.CDK.AWS.ECS;
@@ -9,7 +9,7 @@ using Amazon.CDK.AWS.Cognito;
 using Amazon.CDK.AWS.IAM;
 using Amazon.CDK.AWS.RDS;
 using Amazon.CDK.AWS.SSM;
-using Bookstore.Common;
+
 using HealthCheck = Amazon.CDK.AWS.ElasticLoadBalancingV2.HealthCheck;
 
 namespace Bookstore.Cdk;
@@ -124,7 +124,7 @@ public class EcsStack : Stack
         {
                 new StringParameter(this, "CognitoECSAppClientSSMParameter", new StringParameterProps
                 {
-                    ParameterName = $"/{Constants.AppName}/Authentication/Cognito/ECSClientId",
+                    ParameterName = $"/Bookstore/Authentication/Cognito/ECSClientId",
                     StringValue = ecsUserPoolClient.UserPoolClientId
                 })
             };
@@ -147,7 +147,7 @@ public class EcsStack : Stack
                     {
                         Service = "ssm",
                         Resource = "parameter",
-                        ResourceName = $"{Constants.AppName}/*"
+                        ResourceName = $"Bookstore/*"
                     }, this)
                 }
         }));
