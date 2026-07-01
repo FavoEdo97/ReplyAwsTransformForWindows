@@ -211,6 +211,7 @@ builder.Services.AddControllersWithViews(options =>
 });
 
 // Required to enable [Area] routing for discovered area controllers.
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddRazorPages();
 
 // =========================================================================

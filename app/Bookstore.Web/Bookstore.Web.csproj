@@ -5,6 +5,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="properties\launchSettings.json" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="../Bookstore.Domain/Bookstore.Domain.csproj"></ProjectReference>
     <ProjectReference Include="../Bookstore.Data/Bookstore.Data.csproj"></ProjectReference>
   </ItemGroup>
