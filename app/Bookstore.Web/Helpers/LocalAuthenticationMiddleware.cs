@@ -1,52 +1,54 @@
 ﻿using System;
-using Microsoft.Owin;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Web;
 using Bookstore.Domain.Customers;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 
 namespace Bookstore.Web.Helpers
 {
-    public class LocalAuthenticationMiddleware : OwinMiddleware
+    public class LocalAuthenticationMiddleware
     {
         private const string UserId = "FB6135C7-1464-4A72-B74E-4B63D343DD09";
+        private const string CookieName = "LocalAuthentication";
 
-        private readonly ICustomerService _customerService;
+        private readonly RequestDelegate _next;
 
-        public LocalAuthenticationMiddleware(OwinMiddleware next, ICustomerService customerService) : base(next)
+        public LocalAuthenticationMiddleware(RequestDelegate next)
         {
-            _customerService = customerService;
+            _next = next;
         }
 
-        public override async Task Invoke(IOwinContext context)
+        public async Task InvokeAsync(HttpContext context, ICustomerService customerService)
         {
-            if (context.Request.Path.Value.StartsWith("/Authentication/Login"))
+            if (context.Request.Path.StartsWithSegments("/Authentication/Login"))
             {
-                CreateClaimsPrincipal(context);
+                var principal = CreateClaimsPrincipal();
 
-                await SaveCustomerDetailsAsync();
+                await context.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    principal,
+                    new AuthenticationProperties { ExpiresUtc = DateTimeOffset.UtcNow.AddDays(1) });
 
-                var userCookie = new HttpCookie("LocalAuthentication") { Expires = DateTime.Now.AddDays(1) };
-
-                HttpContext.Current.Response.Cookies.Add(userCookie);
+                await SaveCustomerDetailsAsync(customerService, (ClaimsIdentity)principal.Identity!);
 
                 context.Response.Redirect("/");
+                return;
             }
-            else if (HttpContext.Current.Request.Cookies["LocalAuthentication"] != null)
-            {
-                CreateClaimsPrincipal(context);
 
-                await SaveCustomerDetailsAsync();
-
-                await Next.Invoke(context);
-            }
-            else
+            if (context.Request.Cookies[CookieName] != null)
             {
-                await Next.Invoke(context);
+                var principal = CreateClaimsPrincipal();
+                context.User = principal;
+
+                await SaveCustomerDetailsAsync(customerService, (ClaimsIdentity)principal.Identity!);
             }
+
+            await _next(context);
         }
 
-        private void CreateClaimsPrincipal(IOwinContext context)
+        private static ClaimsPrincipal CreateClaimsPrincipal()
         {
             var identity = new ClaimsIdentity("Application");
 
@@ -56,20 +58,18 @@ namespace Bookstore.Web.Helpers
             identity.AddClaim(new Claim("family_name", "User"));
             identity.AddClaim(new Claim(ClaimTypes.Role, "Administrators"));
 
-            context.Request.User = new ClaimsPrincipal(identity);
+            return new ClaimsPrincipal(identity);
         }
 
-        private async Task SaveCustomerDetailsAsync()
+        private static async Task SaveCustomerDetailsAsync(ICustomerService customerService, ClaimsIdentity identity)
         {
-            var identity = (ClaimsIdentity)HttpContext.Current.User.Identity;
-
             var dto = new CreateOrUpdateCustomerDto(
-                identity.FindFirst("nameidentifier").Value,
-                identity.Name,
-                identity.FindFirst("given_name").Value,
-                identity.FindFirst("family_name").Value);
+                identity.FindFirst("nameidentifier")?.Value ?? string.Empty,
+                identity.Name ?? string.Empty,
+                identity.FindFirst("given_name")?.Value ?? string.Empty,
+                identity.FindFirst("family_name")?.Value ?? string.Empty);
 
-            await _customerService.CreateOrUpdateCustomerAsync(dto);
+            await customerService.CreateOrUpdateCustomerAsync(dto);
         }
     }
 }

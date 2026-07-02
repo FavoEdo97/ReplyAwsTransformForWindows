@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Configuration;
 
 namespace BobsBookstoreClassic.Data
 {
@@ -15,20 +14,14 @@ namespace BobsBookstoreClassic.Data
 
         private BookstoreConfiguration()
         {
-            foreach (string key in ConfigurationManager.AppSettings)
+            var environmentVariables = System.Environment.GetEnvironmentVariables();
+            foreach (System.Collections.DictionaryEntry entry in environmentVariables)
             {
-                _appSettings[key] = ConfigurationManager.AppSettings[key];
-
-                if (Environment.GetEnvironmentVariable(key) != null)
+                string key = entry.Key?.ToString();
+                if (key != null)
                 {
-                    _appSettings[key] = Environment.GetEnvironmentVariable(key);
+                    _appSettings[key] = entry.Value?.ToString();
                 }
-            }
-
-            foreach (ConnectionStringSettings connectionStringSettings in ConfigurationManager.ConnectionStrings)
-            {
-                _connectionStrings[connectionStringSettings.Name] = connectionStringSettings.ConnectionString;
-
             }
         }
 

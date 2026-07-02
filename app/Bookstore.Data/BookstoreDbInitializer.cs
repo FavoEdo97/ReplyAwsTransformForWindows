@@ -1,14 +1,19 @@
 ﻿using Bookstore.Domain.Books;
 using Bookstore.Domain.ReferenceData;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Data.Entity;
+using System.Linq;
 
 namespace Bookstore.Data
 {
-    public class BookstoreDbInitializer : DropCreateDatabaseIfModelChanges<ApplicationDbContext>
+    public static class BookstoreDbInitializer
     {
-        protected override void Seed(ApplicationDbContext context)
+        public static void Seed(ApplicationDbContext context)
         {
+            context.Database.EnsureCreated();
+
+            if (context.ReferenceData.Any()) return;
+
             var referenceDataItems = new List<ReferenceDataItem> {
                 new ReferenceDataItem(ReferenceDataType.BookType, "Hardcover") { Id = 1 },
                 new ReferenceDataItem(ReferenceDataType.BookType, "Trade Paperback") { Id = 2 },
@@ -21,22 +26,22 @@ namespace Bookstore.Data
 
                 new ReferenceDataItem(ReferenceDataType.Genre, "Biographies") { Id = 8 },
                 new ReferenceDataItem(ReferenceDataType.Genre, "Children's Books") { Id = 9 },
-                new ReferenceDataItem( ReferenceDataType.Genre, "History") { Id = 10 },
-                new ReferenceDataItem( ReferenceDataType.Genre, "Literature & Fiction") { Id = 11 },
-                new ReferenceDataItem( ReferenceDataType.Genre, "Mystery, Thriller & Suspense") { Id = 12 },
-                new ReferenceDataItem( ReferenceDataType.Genre, "Science Fiction & Fantasy") { Id = 13 },
-                new ReferenceDataItem( ReferenceDataType.Genre, "Travel") { Id = 14 },
+                new ReferenceDataItem(ReferenceDataType.Genre, "History") { Id = 10 },
+                new ReferenceDataItem(ReferenceDataType.Genre, "Literature & Fiction") { Id = 11 },
+                new ReferenceDataItem(ReferenceDataType.Genre, "Mystery, Thriller & Suspense") { Id = 12 },
+                new ReferenceDataItem(ReferenceDataType.Genre, "Science Fiction & Fantasy") { Id = 13 },
+                new ReferenceDataItem(ReferenceDataType.Genre, "Travel") { Id = 14 },
 
-                new ReferenceDataItem( ReferenceDataType.Publisher, "Arcadia Books") { Id = 15 },
-                new ReferenceDataItem( ReferenceDataType.Publisher, "Astral Publishing") { Id = 16 },
-                new ReferenceDataItem( ReferenceDataType.Publisher, "Moonlight Publishing") { Id = 17 },
-                new ReferenceDataItem( ReferenceDataType.Publisher, "Dreamscape Press") { Id = 18 },
-                new ReferenceDataItem( ReferenceDataType.Publisher, "Enchanted Library") { Id = 19 },
-                new ReferenceDataItem( ReferenceDataType.Publisher, "Fantasia House") { Id = 20 },
-                new ReferenceDataItem( ReferenceDataType.Publisher, "Horizon Books") { Id = 21 },
-                new ReferenceDataItem( ReferenceDataType.Publisher, "Infinity Press") { Id = 22 },
-                new ReferenceDataItem( ReferenceDataType.Publisher, "Paradigm Publishing") { Id = 23 },
-                new ReferenceDataItem( ReferenceDataType.Publisher, "Aurora Publishing") { Id = 24 }
+                new ReferenceDataItem(ReferenceDataType.Publisher, "Arcadia Books") { Id = 15 },
+                new ReferenceDataItem(ReferenceDataType.Publisher, "Astral Publishing") { Id = 16 },
+                new ReferenceDataItem(ReferenceDataType.Publisher, "Moonlight Publishing") { Id = 17 },
+                new ReferenceDataItem(ReferenceDataType.Publisher, "Dreamscape Press") { Id = 18 },
+                new ReferenceDataItem(ReferenceDataType.Publisher, "Enchanted Library") { Id = 19 },
+                new ReferenceDataItem(ReferenceDataType.Publisher, "Fantasia House") { Id = 20 },
+                new ReferenceDataItem(ReferenceDataType.Publisher, "Horizon Books") { Id = 21 },
+                new ReferenceDataItem(ReferenceDataType.Publisher, "Infinity Press") { Id = 22 },
+                new ReferenceDataItem(ReferenceDataType.Publisher, "Paradigm Publishing") { Id = 23 },
+                new ReferenceDataItem(ReferenceDataType.Publisher, "Aurora Publishing") { Id = 24 }
            };
 
             context.ReferenceData.AddRange(referenceDataItems);
