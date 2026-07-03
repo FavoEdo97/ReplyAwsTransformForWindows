@@ -33,10 +33,13 @@ using NLog.AWS.Logger;
 using NLog.Config;
 using NLog.Extensions.Logging;
 using NLog.Targets;
+using Npgsql;
+using System.Data.Common;
 using System.IO;
 using System.Security.Claims;
 using System.Threading.Tasks;
-
+using System.Data.Common;
+using Npgsql;
 // -------------------------------------------------------------------------
 // Program.cs — ASP.NET Core 8.0 entry point for Bookstore.Web
 // Migrated from:
@@ -52,6 +55,10 @@ using System.Threading.Tasks;
 // -------------------------------------------------------------------------
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+//registrazione provider
+DbProviderFactories.RegisterFactory("Npgsql", NpgsqlFactory.Instance);
 
 // =========================================================================
 // 1. CONFIGURATION

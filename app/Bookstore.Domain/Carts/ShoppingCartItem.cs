@@ -31,13 +31,6 @@ namespace Bookstore.Domain.Carts
         public int Quantity { get; set; }
 
         [Column("wanttobuy")]
-        public int WantToBuyValue { get; set; }
-
-        [NotMapped]
-        public bool WantToBuy
-        {
-            get => WantToBuyValue == 1;
-            set => WantToBuyValue = value ? 1 : 0;
-        }
+        public bool WantToBuy { get; set; }
     }
 }

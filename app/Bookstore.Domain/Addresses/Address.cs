@@ -47,13 +47,6 @@ namespace Bookstore.Domain.Addresses
         public Customer Customer { get; set; }
 
         [Column("isactive")]
-        public int IsActiveValue { get; set; } = 1;
-
-        [NotMapped]
-        public bool IsActive
-        {
-            get => IsActiveValue == 1;
-            set => IsActiveValue = value ? 1 : 0;
-        }
+        public bool IsActive { get; set; }
     }
 }

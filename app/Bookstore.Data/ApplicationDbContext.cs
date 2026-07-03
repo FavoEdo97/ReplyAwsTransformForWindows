@@ -27,7 +27,8 @@ namespace Bookstore.Data
     {
         static ApplicationDbContext()
         {
-            Database.SetInitializer(new BookstoreDbInitializer());
+            //Database.SetInitializer(new BookstoreDbInitializer());
+            Database.SetInitializer<ApplicationDbContext>(null);
         }
 
         public ApplicationDbContext(string connectionString) : base(connectionString) { }
