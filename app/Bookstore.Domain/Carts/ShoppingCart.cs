@@ -1,14 +1,18 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
 namespace Bookstore.Domain.Carts
 {
+    [Table("shoppingcart", Schema = "bookstoreclassic_dbo")]
     public class ShoppingCart : Entity
     {
         protected ShoppingCart() { }
 
         public List<ShoppingCartItem> ShoppingCartItems { get; private set; } = new List<ShoppingCartItem>();
 
+        [Column("correlationid")]
         public string CorrelationId { get; set; }
 
         public ShoppingCart(string correlationId)

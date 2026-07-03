@@ -1,7 +1,10 @@
 ﻿using Bookstore.Domain.Books;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bookstore.Domain.Carts
 {
+    [Table("shoppingcartitem", Schema = "bookstoreclassic_dbo")]
     public class ShoppingCartItem : Entity
     {
         // An empty constructor is required by EF Core
@@ -16,14 +19,25 @@ namespace Bookstore.Domain.Carts
             WantToBuy = wantToBuy;
         }
 
+        [Column("shoppingcartid")]
         public int ShoppingCartId { get; set; }
         public ShoppingCart ShoppingCart { get; set; }
 
+        [Column("bookid")]
         public int BookId { get; set; }
         public Book Book { get; set; }
 
+        [Column("quantity")]
         public int Quantity { get; set; }
 
-        public bool WantToBuy { get; set; }
+        [Column("wanttobuy")]
+        public int WantToBuyValue { get; set; }
+
+        [NotMapped]
+        public bool WantToBuy
+        {
+            get => WantToBuyValue == 1;
+            set => WantToBuyValue = value ? 1 : 0;
+        }
     }
 }
