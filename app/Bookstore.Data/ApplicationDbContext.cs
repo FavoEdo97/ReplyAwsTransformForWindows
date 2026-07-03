@@ -13,6 +13,11 @@ namespace Bookstore.Data
 {
     public class ApplicationDbContext : DbContext
     {
+        static ApplicationDbContext()
+        {
+            Database.SetInitializer(new BookstoreDbInitializer());
+        }
+
         public ApplicationDbContext(string connectionString) : base(connectionString) { }
 
         public DbSet<Address> Address { get; set; }
@@ -57,8 +62,6 @@ namespace Bookstore.Data
 
             modelBuilder.Entity<ShoppingCartItem>().HasKey(x => new { x.Id, x.ShoppingCartId });
             modelBuilder.Entity<ShoppingCartItem>().Property(x => x.Id).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-
-            Database.SetInitializer(new BookstoreDbInitializer());
         }
     }
 }
